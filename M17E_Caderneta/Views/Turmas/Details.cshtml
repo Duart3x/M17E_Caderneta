@@ -1,0 +1,48 @@
+﻿@model M17E_Caderneta.Models.Turma
+
+@{
+    ViewBag.Title = "Turma";
+}
+
+<h2 class="mt-5">Turma</h2>
+<hr />
+<div class="shadow border p-3">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AnoLetivo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnoLetivo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ano)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ano)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Letra)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Letra)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+
+    </dl>
+</div>
+<p class="mt-4">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id }, new {@class = "btn btn-warning" })
+    @Html.ActionLink("Voltar", "Index", new { }, new {@class = "btn btn-secondary" })
+</p>

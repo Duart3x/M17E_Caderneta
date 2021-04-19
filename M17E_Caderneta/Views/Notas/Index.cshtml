@@ -1,0 +1,63 @@
+﻿@model IEnumerable<M17E_Caderneta.Models.Nota>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="mt-5">Notas</h2>
+
+<div class="shadow border p-3">
+    <p>
+        @Html.ActionLink("Inserir nova nota", "Create", new { }, new { @class = "btn btn-success float-right mb-4" })
+    </p>
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    Professor(a)
+                </th>
+                <th>
+                    Disciplina
+                </th>
+                <th>
+                    Aluno
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Valor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreateDate)
+                </th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Professor.NomeCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Disciplina.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Aluno.NomeCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit",new { id = item.Id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Editar"><i class="far fa-edit"></i></a>
+                    <a href="@Url.Action("Details",new { id = item.Id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Detalhes"><i class="far fa-info-square text-warning"></i></a>
+                    <a href="@Url.Action("Delete",new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="far fa-trash-alt text-danger"></i></a>
+                </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

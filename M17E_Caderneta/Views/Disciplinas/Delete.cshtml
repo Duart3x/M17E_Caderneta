@@ -1,0 +1,35 @@
+﻿@model M17E_Caderneta.Models.Disciplina
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2 class="mt-5">Tem a certeza que deseja eliminar esta Disciplina?</h2>
+<hr />
+<div >
+    <dl class="shadow p-3 border">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            @Html.ActionLink("Voltar", "Index",new { }, new {@class = "btn btn-secondary" })
+        </div>
+    }
+</div>

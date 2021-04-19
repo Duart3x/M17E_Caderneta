@@ -1,0 +1,9 @@
+Users
+Notas
+Turmas
+Disciplina
+
+Indefinido
+Administradores
+Professores
+Alunos

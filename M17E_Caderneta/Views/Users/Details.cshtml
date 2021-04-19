@@ -1,0 +1,167 @@
+﻿@model M17E_Caderneta.Models.User
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2 class="mt-5">Detalhes</h2>
+<hr />
+<div>
+    <dl class="border shadow p-3">
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Perfil)
+        </dt>
+
+        <dd>
+            @switch (Model.Perfil)
+            {
+                case 0:
+                    @Html.Raw("Administrador")
+                    break;
+
+                case 1:
+                    @Html.Raw("Professor")
+                    break;
+                case 2:
+                    @Html.Raw("Aluno")
+                    break;
+                default:
+                    @Html.Raw("Indefinido")
+                    break;
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataNascimento)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DataNascimento)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumInterno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumInterno)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.estado)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.estado ? "Ativada" : "Desativada")
+        </dd>
+        @if (Model.Perfil == 2)
+        {
+            <dt>
+                Turma
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Turma.Nome)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NumTurma)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NumTurma)
+            </dd>
+        }
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-secondary" })
+</p>
+
+@if (ViewBag.Disciplinas.Count > 0)
+{
+    <h2 class="mt-5">Classificações</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-3">
+            <div class="list-group" id="list-tab" role="tablist">
+                @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
+                {
+
+                    <a class="list-group-item list-group-item-action" id="list-@disciplina.Id-list" data-toggle="list" href="#list-@disciplina.Id" role="tab" aria-controls="@disciplina.Id">
+                        <h5>@disciplina.Nome</h5>
+                        <small>@disciplina.Descricao</small>
+                    </a>
+
+                }
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="tab-content" id="nav-tabContent">
+                @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
+                {
+                    <div class="tab-pane fade" id="list-@disciplina.Id" role="tabpanel" aria-labelledby="list-@disciplina.Id-list">
+                        <table class="table table-sm table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+
+                                    <td>
+                                        Valores
+                                    </td>
+                                    <td>
+                                        Professor(a)
+                                    </td>
+                                    <td>
+                                        Data Lançamento
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (M17E_Caderneta.Models.Nota nota in ViewBag.Notas)
+                                {
+                                    if (nota.IdDisciplina != disciplina.Id)
+                                    {
+                                        continue;
+                                    }
+                                    <tr>
+
+                                        <td>
+                                            @nota.Valor
+                                        </td>
+                                        <td>
+                                            @nota.Professor.Nome
+                                        </td>
+                                        <td>
+                                            @nota.CreateDate
+                                        </td>
+                                    </tr>
+
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

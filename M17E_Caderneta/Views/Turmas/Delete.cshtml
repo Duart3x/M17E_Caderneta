@@ -1,0 +1,53 @@
+﻿@model M17E_Caderneta.Models.Turma
+
+@{
+    ViewBag.Title = "Eliminar Turma";
+}
+
+<h2 class="mt-5">Tem a certeza que deseja eliminar esta Turma?</h2>
+<hr />
+<div>
+    <dl class="shadow border p-3">
+        <dt>
+            @Html.DisplayNameFor(model => model.AnoLetivo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnoLetivo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ano)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ano)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Letra)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Letra)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            @Html.ActionLink("Voltar", "Index",new { }, new {@class = "btn btn-secondary" })
+        </div>
+    }
+</div>

@@ -1,0 +1,56 @@
+﻿@model M17E_Caderneta.Models.Nota
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Nota</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Aluno.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Aluno.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Disciplina.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Disciplina.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Professor.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Professor.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Valor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Valor)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

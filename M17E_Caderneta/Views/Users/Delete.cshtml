@@ -1,0 +1,76 @@
+﻿@model M17E_Caderneta.Models.User
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h3 class="mt-5">Tem a certeza que deseja eliminar este utilizador?</h3>
+<hr />
+<div>
+    <dl class="border shadow p-3">
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumInterno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumInterno)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Perfil)
+        </dt>
+
+        <dd>
+            @switch (Model.Perfil)
+            {
+                case 0:
+                    @Html.Raw("Administrador")
+                    break;
+
+                case 1:
+                    @Html.Raw("Professor")
+                    break;
+                case 2:
+                    @Html.Raw("Aluno")
+                    break;
+                default:
+                    @Html.Raw("Indefinido")
+                    break;
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.estado)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.estado ? "Ativada" : "Desativada")
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            @Html.ActionLink("Voltar", "Index",new { }, new { @class = "btn btn-secondary"})
+        </div>
+    }
+</div>

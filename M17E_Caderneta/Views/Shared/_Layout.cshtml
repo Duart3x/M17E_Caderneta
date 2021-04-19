@@ -1,0 +1,100 @@
+﻿@using M17E_Caderneta.Helper
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v5.15.2/css/pro.min.css">
+    <title>@ViewBag.Title - Caderneta</title>
+    @Scripts.Render("~/bundles/jquery")
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/Scripts/pt.js"></script>
+    <link rel="stylesheet" href=@Html.Raw("https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css")>
+</head>
+<body style="height: 100vh;">
+    <div class="navbar navbar-expand-lg navbar-dark
+    @if (Request.Url.LocalPath == "/" || Request.Url.LocalPath == "/Home/Index")
+    {
+        @Html.Raw("bg-transparent");
+
+    }
+    else {
+        @Html.Raw("navbarstars");
+    } ">
+        <div class="container-fluid mycontainer d-flex  justify-content-between">
+            <div>
+                @Html.ActionLink("Caderneta", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+            <div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item active">
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-info mr-4 dropdown-toggle" type="button" id="dropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @Html.DisplayName("Administração")
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownAdmin">
+                                            @Html.ActionLink("Utilizadores", "Index", "Users", new { area = "" }, new { @class = "dropdown-item" })
+                                            @Html.ActionLink("Notas", "Index", "Notas", new { area = "" }, new { @class = "dropdown-item" })
+                                            @Html.ActionLink("Turmas", "Index", "Turmas", new { area = "" }, new { @class = "dropdown-item" })
+                                            @Html.ActionLink("Disciplinas", "Index", "Disciplinas", new { area = "" }, new { @class = "dropdown-item" })
+
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <div class="dropdown">
+                                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownPerfil" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @Html.DisplayName("Olá, " + @Html.UserName(User))
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownPerfil">
+                                        @Html.ActionLink("Editar Perfil", "Edit/" + User.Identity.Name, "Users", new { area = "" }, new { @class = "dropdown-item" })
+                                        @Html.ActionLink("Terminar sessão", "Index", "logout", new { area = "" }, new { @class = "dropdown-item" })
+                                    </div>
+                                </div>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">@Html.ActionLink("Registar", "Create", "Users", new { area = "" }, new { @class = "nav-link active" })</li>
+
+                            <li class="nav-item">@Html.ActionLink("Login", "Index", "Login", new { area = "" }, new { @class = "nav-link active" })</li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="container-fluid mycontainer">
+        @RenderBody()
+    </div>
+    <footer class="d-flex w-100 position-fixed align-items-center justify-content-center" style="bottom:0;">
+        <p>&copy; @DateTime.Now.Year - Caderneta - Duarte Santos</p>
+    </footer>
+
+   
+    
+    @RenderSection("scripts", required: false)
+</body>
+</html>

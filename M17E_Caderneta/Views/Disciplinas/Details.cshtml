@@ -1,0 +1,30 @@
+﻿@model M17E_Caderneta.Models.Disciplina
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2 class="mt-5">Detalhes</h2>
+<hr />
+<div class="shadow border p-3">
+    <dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>
+    </dl>
+</div>
+<p class="mt-4">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id },new {@class ="btn btn-warning" })
+    @Html.ActionLink("Voltar", "Index",new { },new {@class = "btn btn-secondary" })
+</p>

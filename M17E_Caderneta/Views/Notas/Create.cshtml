@@ -1,0 +1,74 @@
+﻿@model M17E_Caderneta.Models.Nota
+
+@{
+    ViewBag.Title = "Criar";
+}
+
+<h2 class="mt-5">Inserir nova nota</h2>
+
+<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdAluno, "Aluno")
+            @Html.DropDownList("IdAluno", null, htmlAttributes: new { @class = "form-control" })
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdProfessor, "Professor")
+            <div>
+                @Html.DropDownList("IdProfessor", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdProfessor, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdDisciplina, "Disciplina")
+            <div>
+                @Html.DropDownList("IdDisciplina", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdDisciplina, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Valor)
+            <div>
+                @Html.EditorFor(model => model.Valor, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Valor, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Criar" class="btn btn-success" />
+            @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    
+    <script>
+        $(document).ready(function () {
+            $("#IdAluno").select2({
+                language: "pt",
+                theme: 'bootstrap4',
+            });
+            $("#IdProfessor").select2({
+                language: "pt",
+                theme: 'bootstrap4',
+            });
+            $("#IdDisciplina").select2({
+                language: "pt",
+                theme: 'bootstrap4',
+            });
+        })
+    </script>
+}
+
