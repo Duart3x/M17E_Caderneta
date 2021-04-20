@@ -12,12 +12,13 @@ using M17E_Caderneta.Models;
 
 namespace M17E_Caderneta.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    
     public class NotasController : Controller
     {
         private M17E_CadernetaContext db = new M17E_CadernetaContext();
 
         // GET: Notas
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Index()
         {
             var notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Include(e => e.Professor).Include("Disciplina");
@@ -25,13 +26,14 @@ namespace M17E_Caderneta.Controllers
         }
 
         // GET: Notas/Details/5
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Nota nota = await db.Notas.FindAsync(id);
+            Nota nota = await db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Include(e => e.Professor).Include("Disciplina").Where(e => e.Id == id).FirstAsync();
             if (nota == null)
             {
                 return HttpNotFound();
@@ -40,11 +42,19 @@ namespace M17E_Caderneta.Controllers
         }
 
         // GET: Notas/Create
+        [Authorize(Roles = "Professor,Administrador")]
         public ActionResult Create()
         {
             ViewBag.IdAluno = new SelectList(db.Users.Where(e => e.Perfil == 2 && e.NumTurma != null).Include("Turma").ToList(), "Id", "NomeCompleto");
             ViewBag.IdDisciplina = new SelectList(db.Disciplinas, "Id", "Nome");
-            ViewBag.IdProfessor = new SelectList(db.Users.Where(e => e.Perfil == 1 || e.Perfil == 0), "Id", "NomeCompleto");
+            if (User.IsInRole("Professor"))
+            {
+                ViewBag.IdProfessor = new SelectList(db.Users.Where(e => e.Id.ToString() == User.Identity.Name), "Id", "NomeCompleto");
+            }
+            else
+            {
+                ViewBag.IdProfessor = new SelectList(db.Users.Where(e => e.Perfil == 1 || e.Perfil == 0), "Id", "NomeCompleto");
+            }
             return View();
         }
 
@@ -53,22 +63,35 @@ namespace M17E_Caderneta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Professor,Administrador")]
         public async Task<ActionResult> Create([Bind(Include = "Id,IdAluno,IdProfessor,IdDisciplina,Valor")] Nota nota)
         {
             if (ModelState.IsValid)
             {
                 db.Notas.Add(nota);
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                if (User.IsInRole("Professor"))
+                    return RedirectToAction("Index", "Home");
+                else
+                    return RedirectToAction("Index");
             }
 
             ViewBag.IdAluno = new SelectList(db.Users.Where(e => e.Perfil == 2 && e.NumTurma != null).Include("Turma").ToList(), "Id", "NomeCompleto");
             ViewBag.IdDisciplina = new SelectList(db.Disciplinas, "Id", "Nome");
-            ViewBag.IdProfessor = new SelectList(db.Users.Where(e => e.Perfil == 1 || e.Perfil == 0), "Id", "NomeCompleto");
+            if(User.IsInRole("Professor"))
+            {
+                ViewBag.IdProfessor = new SelectList(db.Users.Where(e => e.Id.ToString() == User.Identity.Name), "Id", "NomeCompleto");
+            }
+            else
+            {
+                ViewBag.IdProfessor = new SelectList(db.Users.Where(e => e.Perfil == 1 || e.Perfil == 0), "Id", "NomeCompleto");
+            }
+            
             return View(nota);
         }
 
         // GET: Notas/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +114,7 @@ namespace M17E_Caderneta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Edit([Bind(Include = "Id,IdAluno,IdProfessor,IdDisciplina,Valor")] Nota nota)
         {
             if (ModelState.IsValid)
@@ -106,13 +130,15 @@ namespace M17E_Caderneta.Controllers
         }
 
         // GET: Notas/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Nota nota = await db.Notas.FindAsync(id);
+            Nota nota = await db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Include(e => e.Professor).Include("Disciplina").Where(e => e.Id == id).FirstAsync();
+
             if (nota == null)
             {
                 return HttpNotFound();
@@ -123,9 +149,11 @@ namespace M17E_Caderneta.Controllers
         // POST: Notas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Nota nota = await db.Notas.FindAsync(id);
+            Nota nota = await db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Include(e => e.Professor).Include("Disciplina").Where(e => e.Id == id).FirstAsync();
+
             db.Notas.Remove(nota);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");

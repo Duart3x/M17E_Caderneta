@@ -23,11 +23,12 @@ namespace M17E_Caderneta.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Index()
         {
-            return View(await db.Users.Include(e => e.Turma).ToListAsync());
+            var users = await db.Users.Include(e => e.Turma).ToListAsync();
+            return View(users);
         }
 
         // GET: Users/Details/5
-        [Authorize(Roles = "Administrador")]
+        [Authorize]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,6 +41,9 @@ namespace M17E_Caderneta.Controllers
             {
                 return HttpNotFound();
             }
+            if(User.Identity.Name != id.ToString() && !User.IsInRole("Administrador"))
+                return HttpNotFound();
+
             List<Nota> notas = await db.Notas.Include(e => e.Disciplina)
                 .Where(e => e.IdAluno == user.Id)
                 .OrderBy(e => e.Disciplina.Nome).ToListAsync();
@@ -258,8 +262,16 @@ namespace M17E_Caderneta.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             User user = await db.Users.FindAsync(id);
-            db.Users.Remove(user);
-            await db.SaveChangesAsync();
+            try
+            {
+                db.Users.Remove(user);
+                await db.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
+            
             return RedirectToAction("Index");
         }
 

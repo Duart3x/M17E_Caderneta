@@ -8,12 +8,13 @@
 <hr />
 <div class="shadow border p-3">
     <dl class="dl-horizontal">
+
         <dt>
-            @Html.DisplayNameFor(model => model.Aluno.Email)
+            Professor(a)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Aluno.Email)
+            @Html.DisplayFor(model => model.Professor.NomeCompleto)
         </dd>
 
         <dt>
@@ -25,11 +26,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Professor.Email)
+            Aluno
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Professor.Email)
+            @Html.DisplayFor(model => model.Aluno.NomeCompleto)
         </dd>
 
         <dt>
@@ -40,6 +41,13 @@
             @Html.DisplayFor(model => model.Valor)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
     </dl>
 </div>
 <p class="mt-4">

@@ -60,6 +60,27 @@
                                     </div>
                                 </li>
                             }
+                            else if (User.IsInRole("Professor"))
+                            {
+                                <li class="nav-item active">
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-info mr-4 dropdown-toggle" type="button" id="dropdownProfessor" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @Html.DisplayName("Professor")
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownProfessor">
+                                            @Html.ActionLink("Lançar Nota", "Create", "Notas", new { area = "" }, new { @class = "dropdown-item" })
+                                            @Html.ActionLink("Turmas", "Index", "Turmas", new { area = "" }, new { @class = "dropdown-item" })
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            else if (User.IsInRole("Aluno"))
+                            {
+                                <li class="nav-item active">
+                                    @Html.ActionLink("Ver Notas", "Details", "Users", new { id = User.Identity.Name }, new { @class = "nav-link active" })
+                                </li>
+                            }
                             <li class="nav-item">
                                 <div class="dropdown">
                                     <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownPerfil" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -93,8 +114,8 @@
         <p>&copy; @DateTime.Now.Year - Caderneta - Duarte Santos</p>
     </footer>
 
-   
-    
+
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

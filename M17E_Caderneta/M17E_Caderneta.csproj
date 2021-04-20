@@ -331,6 +331,7 @@
     <Content Include="Views\Notas\Edit.cshtml" />
     <Content Include="Views\Notas\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Turmas\ConsultaNotas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Logout\" />

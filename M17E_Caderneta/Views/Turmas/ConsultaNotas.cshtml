@@ -1,108 +1,15 @@
-﻿@model M17E_Caderneta.Models.User
-
-@{
-    ViewBag.Title = "Detalhes";
+﻿@{
+    ViewBag.Title = "ConsultaNotas";
 }
 
-<h2 class="mt-5">Detalhes</h2>
-<hr />
-<div>
-    <dl class="border shadow p-3">
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
+<h2 class="mt-5">Notas da turma</h2>
+<div class="shadow p-3 border">
 
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Perfil)
-        </dt>
-
-        <dd>
-            @switch (Model.Perfil)
-            {
-                case 0:
-                    @Html.Raw("Administrador")
-                    break;
-
-                case 1:
-                    @Html.Raw("Professor")
-                    break;
-                case 2:
-                    @Html.Raw("Aluno")
-                    break;
-                default:
-                    @Html.Raw("Indefinido")
-                    break;
-            }
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NumInterno)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NumInterno)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.estado)
-        </dt>
-
-        <dd>
-            @Html.Raw(Model.estado ? "Ativada" : "Desativada")
-        </dd>
-        @if (Model.Perfil == 2)
-        {
-            <dt>
-                Turma
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Turma.Nome)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.NumTurma)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.NumTurma)
-            </dd>
-        }
-    </dl>
-</div>
-@if (User.IsInRole("Administrator"))
-{
-    <p>
-        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" })
-        @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-secondary" })
-    </p>
-}
-
+<p><b>Média Turma:</b> @ViewBag.MediaTurma Valores</p>
 
 @if (ViewBag.Disciplinas.Count > 0)
 {
-    <h2 class="mt-5">Classificações</h2>
-    <hr />
-
     <div class="row">
         <div class="col-3">
             <div class="list-group" id="list-tab" role="tablist">
@@ -117,7 +24,7 @@
                 }
             </div>
         </div>
-        <div class="col-5">
+        <div class="col-9">
             <div class="tab-content" id="nav-tabContent">
                 @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
                 {
@@ -125,7 +32,12 @@
                         <table class="table table-sm table-striped table-bordered">
                             <thead class="table-dark">
                                 <tr>
-
+                                    <td>
+                                        Número
+                                    </td>
+                                    <td>
+                                        Aluno
+                                    </td>
                                     <td>
                                         Valores
                                     </td>
@@ -145,12 +57,18 @@
                                         continue;
                                     }
                                     <tr>
-
+                                        <td>
+                                            @nota.Aluno.NumTurma
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Details","Users", new { id = nota.IdAluno})">@nota.Aluno.Nome</a>
+                                            
+                                        </td>
                                         <td>
                                             @nota.Valor
                                         </td>
                                         <td>
-                                            @nota.Professor.Nome
+                                            <a href="@Url.Action("Details","Users", new { id = nota.IdProfessor})">@nota.Professor.Nome</a>                                            
                                         </td>
                                         <td>
                                             @nota.CreateDate
@@ -167,3 +85,10 @@
         </div>
     </div>
 }
+else
+{
+    <div class="text-muted">
+        Sem Resultados para apresentar
+    </div>
+}
+</div>

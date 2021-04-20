@@ -4,19 +4,16 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h2 class="mt-5">Tem a certeza que dedeseja apagar esta nota?</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Nota</h4>
-    <hr />
+<div class="shadow border p-3">
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Aluno.Email)
+            Professor(a)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Aluno.Email)
+            @Html.DisplayFor(model => model.Professor.NomeCompleto)
         </dd>
 
         <dt>
@@ -28,11 +25,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Professor.Email)
+            Aluno
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Professor.Email)
+            @Html.DisplayFor(model => model.Aluno.NomeCompleto)
         </dd>
 
         <dt>
@@ -43,14 +40,23 @@
             @Html.DisplayFor(model => model.Valor)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
     </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
 </div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions mt-4">
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-secondary" })
+    </div>
+}

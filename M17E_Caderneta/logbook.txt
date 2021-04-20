@@ -7,3 +7,15 @@ Indefinido
 Administradores
 Professores
 Alunos
+
+
+
+<<< Professores >>>
+- Lançar Notas
+- Ver notas por turma
+
+<<< Alunos >>>
+- Ver as suas notas
+
+<< Administradores >>
+- CRUD de tudo

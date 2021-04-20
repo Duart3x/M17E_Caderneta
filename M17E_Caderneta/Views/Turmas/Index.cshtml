@@ -7,15 +7,19 @@
 <h2 class="mt-5">Turmas</h2>
 
 <div class="border shadow p-3">
-    <p>
-        @Html.ActionLink("Criar nova turma", "Create", new { }, new { @class = "btn btn-success mb-4 float-right" })
-    </p>
+    @if (User.IsInRole("Administrador"))
+    {
+        <p>
+            @Html.ActionLink("Criar nova turma", "Create", new { }, new { @class = "btn btn-success mb-4 float-right" })
+        </p>
+    }
     <table class="table">
         <thead class="table-dark">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.AnoLetivo)
+                    @Html.DisplayNameFor(model => model.Nome)
                 </th>
+
                 <th>
                     @Html.DisplayNameFor(model => model.Ano)
                 </th>
@@ -23,18 +27,23 @@
                     @Html.DisplayNameFor(model => model.Letra)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Nome)
+                    @Html.DisplayNameFor(model => model.AnoLetivo)
                 </th>
-                <th>Opções</th>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <th>Opções</th>
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
+
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.AnoLetivo)
+                        <a href="@Url.Action("ConsultaNotas","Turmas",new { id = item.id })">@Html.DisplayFor(modelItem => item.Nome) </a>
                     </td>
+
                     <td>
                         @Html.DisplayFor(modelItem => item.Ano)
                     </td>
@@ -42,13 +51,17 @@
                         @Html.DisplayFor(modelItem => item.Letra)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Nome)
+                        @Html.DisplayFor(modelItem => item.AnoLetivo)
                     </td>
-                    <td>
-                        <a href="@Url.Action("Edit",new { id = item.id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Editar"><i class="far fa-edit"></i></a>
-                        <a href="@Url.Action("Details",new { id = item.id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Detalhes"><i class="far fa-info-square text-warning"></i></a>
-                        <a href="@Url.Action("Delete",new { id = item.id })" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="far fa-trash-alt text-danger"></i></a>
-                    </td>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <td>
+                            <a href="@Url.Action("Edit",new { id = item.id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Editar"><i class="far fa-edit"></i></a>
+                            <a href="@Url.Action("Details",new { id = item.id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Detalhes"><i class="far fa-info-square text-warning"></i></a>
+                            <a href="@Url.Action("Delete",new { id = item.id })" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="far fa-trash-alt text-danger"></i></a>
+                        </td>
+                    }
+
                 </tr>
             }
         </tbody>
