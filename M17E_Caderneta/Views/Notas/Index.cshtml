@@ -1,4 +1,6 @@
-﻿@model IEnumerable<M17E_Caderneta.Models.Nota>
+﻿@model PagedList.IPagedList<M17E_Caderneta.Models.Nota>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Index";
@@ -7,9 +9,32 @@
 <h2 class="mt-5">Notas</h2>
 
 <div class="shadow border p-3">
-    <p>
-        @Html.ActionLink("Inserir nova nota", "Create", new { }, new { @class = "btn btn-success float-right mb-4" })
-    </p>
+    <div class="mb-3 d-flex justify-content-between">
+        <div class="dropdown">
+            <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="dropdownFiltros" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Ordenação
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownFiltros">
+                <li> <a class="dropdown-item" href="@Url.Action("Index",new { sortOrder = "name_asc",currentFilter=ViewBag.CurrentFilter})">Nome [a-z]</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index",new { sortOrder = "name_desc",currentFilter=ViewBag.CurrentFilter})">Nome [z-a]</a></li>
+            </ul>
+        </div>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
+        {
+            <div>
+                @Html.ActionLink("Inserir nova nota", "Create", new { }, new { @class = "btn btn-success" })
+            </div>
+        }
+        @using (Html.BeginForm("Index", "Notas", FormMethod.Get))
+        {
+            <div class="d-flex ">
+
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Procurar por nome aluno", @type = "search" })
+                <input type="submit" value="Procurar" class="ml-3 btn btn-sm btn-outline-dark" />
+            </div>
+        }
+    </div>
     <table class="table">
         <thead class="table-dark">
             <tr>
@@ -23,10 +48,10 @@
                     Aluno
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Valor)
+                    Valor
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CreateDate)
+                    Data de criação
                 </th>
                 <th>Opções</th>
             </tr>
@@ -34,30 +59,35 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Professor.NomeCompleto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Disciplina.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Aluno.NomeCompleto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Valor)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateDate)
-                </td>
-                <td>
-                    <a href="@Url.Action("Edit",new { id = item.Id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Editar"><i class="far fa-edit"></i></a>
-                    <a href="@Url.Action("Details",new { id = item.Id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Detalhes"><i class="far fa-info-square text-warning"></i></a>
-                    <a href="@Url.Action("Delete",new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="far fa-trash-alt text-danger"></i></a>
-                </td>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Professor.NomeCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Disciplina.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Aluno.NomeCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateDate)
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit",new { id = item.Id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Editar"><i class="far fa-edit"></i></a>
+                        <a href="@Url.Action("Details",new { id = item.Id })" class="mr-3" data-toggle="tooltip" data-placement="top" title="Detalhes"><i class="far fa-info-square text-warning"></i></a>
+                        <a href="@Url.Action("Delete",new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="far fa-trash-alt text-danger"></i></a>
+                    </td>
 
-            </tr>
+                </tr>
             }
         </tbody>
     </table>
+    <br />
+    Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 </div>

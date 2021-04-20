@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using M17E_Caderneta.Data;
 using M17E_Caderneta.Models;
+using PagedList;
 
 namespace M17E_Caderneta.Controllers
 {
@@ -19,9 +20,44 @@ namespace M17E_Caderneta.Controllers
 
         // GET: Turmas
         [Authorize(Roles = "Administrador,Professor")]
-        public async Task<ActionResult> Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(await db.Turmas.ToListAsync());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var turmas = db.Turmas.Select(e => e);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                turmas = turmas.Where(e => string.Concat(e.Ano,e.Letra," (", e.AnoLetivo.Year.ToString(), ")").Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    turmas = turmas.OrderByDescending(e => string.Concat(e.Ano, e.Letra, " (", e.AnoLetivo.Year.ToString(), ")"));
+                    break;
+                case "name_asc":
+                    turmas = turmas.OrderBy(e => string.Concat(e.Ano, e.Letra, " (", e.AnoLetivo.Year.ToString(), ")"));
+                    break;
+                default:
+                    turmas = turmas.OrderBy(e => string.Concat(e.Ano, e.Letra, " (", e.AnoLetivo.Year.ToString(), ")"));
+                    break;
+            }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(turmas.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Turmas/Details/5

@@ -11,6 +11,7 @@ using M17E_Caderneta.Data;
 using M17E_Caderneta.Models;
 using System.Text;
 using System.Security.Cryptography;
+using PagedList;
 
 namespace M17E_Caderneta.Controllers
 {
@@ -21,10 +22,51 @@ namespace M17E_Caderneta.Controllers
 
         // GET: Users
         [Authorize(Roles = "Administrador")]
-        public async Task<ActionResult> Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var users = await db.Users.Include(e => e.Turma).ToListAsync();
-            return View(users);
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var users = db.Users.Include(e => e.Turma).Select(e => e);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(e => e.Nome.Contains(searchString) || e.NumInterno.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    users = users.OrderByDescending(s => s.Nome);
+                    break;
+                case "name_asc":
+                    users = users.OrderBy(s => s.Nome);
+                    break;
+                case "num_desc":
+                    users = users.OrderByDescending(s => s.NumInterno);
+                    break;
+                case "num_asc":
+                    users = users.OrderBy(s => s.NumInterno);
+                    break;
+                default:
+                    users = users.OrderBy(s => s.Nome);
+                    break;
+            }
+
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(users.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Users/Details/5

@@ -1,5 +1,6 @@
-﻿@model IEnumerable<M17E_Caderneta.Models.Turma>
-
+﻿@model PagedList.IPagedList<M17E_Caderneta.Models.Turma>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{
     ViewBag.Title = "Index";
 }
@@ -7,27 +8,47 @@
 <h2 class="mt-5">Turmas</h2>
 
 <div class="border shadow p-3">
-    @if (User.IsInRole("Administrador"))
-    {
-        <p>
-            @Html.ActionLink("Criar nova turma", "Create", new { }, new { @class = "btn btn-success mb-4 float-right" })
-        </p>
-    }
+    <div class="mb-3 d-flex justify-content-between">
+        <div class="dropdown">
+            <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="dropdownFiltros" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Ordenação
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownFiltros">
+                <li> <a class="dropdown-item" href="@Url.Action("Index",new { sortOrder = "name_asc",currentFilter=ViewBag.CurrentFilter})">Nome [a-z]</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index",new { sortOrder = "name_desc",currentFilter=ViewBag.CurrentFilter})">Nome [z-a]</a></li>
+            </ul>
+        </div>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
+        {
+            <div>
+                @Html.ActionLink("Criar nova Turma", "Create", new { }, new { @class = "btn btn-success" })
+            </div>
+        }
+        @using (Html.BeginForm("Index", "Turmas", FormMethod.Get))
+        {
+            <div class="d-flex ">
+
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Procurar por nome", @type = "search" })
+                <input type="submit" value="Procurar" class="ml-3 btn btn-sm btn-outline-dark" />
+            </div>
+        }
+    </div>
     <table class="table">
         <thead class="table-dark">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Nome)
+                    Nome
                 </th>
 
                 <th>
-                    @Html.DisplayNameFor(model => model.Ano)
+                    Ano
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Letra)
+                    Letra
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.AnoLetivo)
+                    Ano Letivo
                 </th>
                 @if (User.IsInRole("Administrador"))
                 {
@@ -66,4 +87,9 @@
             }
         </tbody>
     </table>
+    <br />
+    Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 </div>

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using M17E_Caderneta.Data;
 using M17E_Caderneta.Models;
+using PagedList;
 
 namespace M17E_Caderneta.Controllers
 {
@@ -19,10 +20,44 @@ namespace M17E_Caderneta.Controllers
 
         // GET: Notas
         [Authorize(Roles = "Administrador")]
-        public async Task<ActionResult> Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Include(e => e.Professor).Include("Disciplina");
-            return View(await notas.ToListAsync());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Include(e => e.Professor).Include("Disciplina").Select(e => e);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                notas = notas.Where(e => e.Aluno.Nome.Contains(searchString) || e.Professor.Nome.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    notas = notas.OrderByDescending(s => s.Aluno.Nome);
+                    break;
+                case "name_asc":
+                    notas = notas.OrderBy(s => s.Aluno.Nome);
+                    break;
+                default:
+                    notas = notas.OrderBy(s => s.Aluno.Nome);
+                    break;
+            }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(notas.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Notas/Details/5

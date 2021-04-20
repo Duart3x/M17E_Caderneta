@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using M17E_Caderneta.Data;
 using M17E_Caderneta.Models;
+using PagedList;
 
 namespace M17E_Caderneta.Controllers
 {
@@ -17,9 +18,44 @@ namespace M17E_Caderneta.Controllers
         private M17E_CadernetaContext db = new M17E_CadernetaContext();
 
         // GET: Disciplinas
-        public async Task<ActionResult> Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(await db.Disciplinas.ToListAsync());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = sortOrder;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var disciplinas = db.Disciplinas.Select(e => e);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                disciplinas = disciplinas.Where(e=> e.Nome.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    disciplinas = disciplinas.OrderByDescending(s => s.Nome);
+                    break;
+                case "name_asc":
+                    disciplinas = disciplinas.OrderBy(s => s.Nome);
+                    break;
+                default:
+                    disciplinas = disciplinas.OrderBy(s => s.Nome);
+                    break;
+            }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(disciplinas.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Disciplinas/Details/5
@@ -38,6 +74,7 @@ namespace M17E_Caderneta.Controllers
         }
 
         // GET: Disciplinas/Create
+        [Authorize(Roles ="Administrador")]
         public ActionResult Create()
         {
             return View();
@@ -48,6 +85,7 @@ namespace M17E_Caderneta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Create([Bind(Include = "Id,Nome,Descricao")] Disciplina disciplina)
         {
             if (ModelState.IsValid)
@@ -61,6 +99,7 @@ namespace M17E_Caderneta.Controllers
         }
 
         // GET: Disciplinas/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,6 +119,7 @@ namespace M17E_Caderneta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Nome,Descricao")] Disciplina disciplina)
         {
             if (ModelState.IsValid)
@@ -92,6 +132,7 @@ namespace M17E_Caderneta.Controllers
         }
 
         // GET: Disciplinas/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
@@ -109,6 +150,7 @@ namespace M17E_Caderneta.Controllers
         // POST: Disciplinas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Disciplina disciplina = await db.Disciplinas.FindAsync(id);
