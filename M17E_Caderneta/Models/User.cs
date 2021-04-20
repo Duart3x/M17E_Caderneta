@@ -52,6 +52,8 @@ namespace M17E_Caderneta.Models
         [Display(Name = "Estado da conta")]
         public bool estado { get; set; }
 
+        public string lnkRecuperar { get; set; }
+
         [NotMapped]
         public string NomeCompleto { get {
             if(Perfil == 2)

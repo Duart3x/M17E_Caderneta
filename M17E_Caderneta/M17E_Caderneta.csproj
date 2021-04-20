@@ -186,6 +186,10 @@
     <Compile Include="Migrations\202104161545450_NumTurmaNull.Designer.cs">
       <DependentUpon>202104161545450_NumTurmaNull.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104202127543_lnkRecuperar.cs" />
+    <Compile Include="Migrations\202104202127543_lnkRecuperar.Designer.cs">
+      <DependentUpon>202104202127543_lnkRecuperar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppRoleProvider.cs" />
     <Compile Include="Models\Disciplina.cs" />
@@ -362,6 +366,7 @@
     <Content Include="Views\Notas\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Turmas\ConsultaNotas.cshtml" />
+    <Content Include="Views\Login\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Logout\" />
@@ -392,6 +397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202104161545450_NumTurmaNull.resx">
       <DependentUpon>202104161545450_NumTurmaNull.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104202127543_lnkRecuperar.resx">
+      <DependentUpon>202104202127543_lnkRecuperar.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
