@@ -7,7 +7,7 @@
 
 
 <h2 class="mt-5">Fazer pedido de registo na plataforma</h2>
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create","Users",FormMethod.Post,new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -50,6 +50,16 @@
             @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
         </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Foto de perfil")
+
+        <div class="custom-file">
+            <input type="file" name="foto" id="foto" class="custom-file-input" />
+            @Html.LabelFor(model => model.foto, new { @class = "custom-file-label" })
+        </div>
+        @Html.ValidationMessageFor(model => model.foto, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">

@@ -53,6 +53,8 @@ namespace M17E_Caderneta.Models
         public bool estado { get; set; }
 
         public string lnkRecuperar { get; set; }
+        [Display(Name = "Foto de perfil")]
+        public byte[] foto { get; set; }
 
         [NotMapped]
         public string NomeCompleto { get {

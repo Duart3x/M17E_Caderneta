@@ -85,7 +85,9 @@
                             <li class="nav-item">
                                 <div class="dropdown">
                                     <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownPerfil" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        @Html.DisplayName("Olá, " + @Html.UserName(User))
+                                        @Html.Raw("<img src=\"data:image/jpeg;base64," + Convert.ToBase64String(@Html.UserFoto(User)) + "\" style=\"height: 30px; width: 30px; border-radius: 50%;\" />")
+
+                                        @Html.DisplayName(@Html.UserName(User))
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownPerfil">
                                         @Html.ActionLink("Editar Perfil", "Edit/" + User.Identity.Name, "Users", new { area = "" }, new { @class = "dropdown-item" })

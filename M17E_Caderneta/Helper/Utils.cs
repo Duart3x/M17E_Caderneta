@@ -23,6 +23,21 @@ namespace M17E_Caderneta.Helper
             return UserName;
         }
 
+        public static byte[] UserFoto(this HtmlHelper htmlHelper,
+                System.Security.Principal.IPrincipal utilizador)
+        {
+            byte[] foto = null;
+
+            using (var context = new Data.M17E_CadernetaContext())
+            {
+                var user = context.Users.Where(u => u.Id.ToString() == utilizador.Identity.Name).ToList()[0];
+
+                foto = user.foto;
+            }
+
+            return foto;
+        }
+
         public static void enviarMail(string nomeDe, string passwordDe, string para, string assunto, string texto, string anexo = null)
         {
             //objetos mail

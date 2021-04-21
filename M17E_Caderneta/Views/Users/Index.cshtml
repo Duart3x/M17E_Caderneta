@@ -38,7 +38,11 @@
     </div>
     <table class="table">
         <thead class="thead-dark">
+
             <tr>
+                <th>
+                    Foto
+                </th>
                 <th>
                     Email
                 </th>
@@ -70,6 +74,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @Html.Raw("<img id=\"img_foto\" src=\"data:image/jpeg;base64," + Convert.ToBase64String(item.foto) + "\" class=\"img-thumbnail rounded\" style=\"width: 150px\" />")
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>

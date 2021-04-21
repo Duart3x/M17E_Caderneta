@@ -39,6 +39,7 @@ namespace M17E_Caderneta.Models
 
 
         [Required(ErrorMessage = "Tem de indicar uma disciplina")]
+        [Range(1,20, ErrorMessage ="O valor deve ser entre 1 e 20")]
         public int Valor { get; set; }
         public Nota()
         {

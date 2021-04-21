@@ -6,8 +6,8 @@
 
 <h2 class="mt-5">Detalhes</h2>
 <hr />
-<div>
-    <dl class="border shadow p-3">
+<div class="d-flex border shadow p-3 justify-content-between">
+    <dl>
         <dt>
             @Html.DisplayNameFor(model => model.Email)
         </dt>
@@ -88,6 +88,14 @@
             </dd>
         }
     </dl>
+
+    @if (Model.foto != null)
+    {
+        <div>
+            @Html.Raw("<img src=\"data:image/jpeg;base64," + Convert.ToBase64String(Model.foto) + "\" class=\"img-thumbnail rounded\" style=\"height: 200px\" />")
+        </div>
+    }
+
 </div>
 @if (User.IsInRole("Administrator"))
 {

@@ -12,6 +12,7 @@ using M17E_Caderneta.Models;
 using System.Text;
 using System.Security.Cryptography;
 using PagedList;
+using System.IO;
 
 namespace M17E_Caderneta.Controllers
 {
@@ -114,10 +115,28 @@ namespace M17E_Caderneta.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<ActionResult> Create([Bind(Include = "Email,Nome,DataNascimento,NumInterno,Password")] User user)
+        public async Task<ActionResult> Create([Bind(Include = "Email,Nome,DataNascimento,NumInterno,Password")] User user, HttpPostedFileBase foto)
         {
             if (ModelState.IsValid)
             {
+                if (foto != null && foto.ContentLength > 0)
+                {
+                    byte[] imageData = null;
+                    using (var binaryReader = new BinaryReader(foto.InputStream))
+                    {
+                        imageData = binaryReader.ReadBytes(foto.ContentLength);
+                        user.foto = imageData;
+                    }
+                    
+                   /* user.foto = new byte[foto.ContentLength];
+                    foto.InputStream.Read(user.foto, 0, foto.ContentLength);*/
+                }
+                else
+                {
+                    ModelState.AddModelError("","Foto de perfil inválida");
+                    return View(user);
+                }
+
                 HMACSHA512 hMACSHA512 = new HMACSHA512(new byte[] { 1 });
                 var password = hMACSHA512.ComputeHash(Encoding.UTF8.GetBytes(user.Password));
                 user.Password = Convert.ToBase64String(password);
@@ -193,8 +212,20 @@ namespace M17E_Caderneta.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Email,Password,Perfil,estado,Nome,NumInterno,DataNascimento,TurmaId,NumTurma")] User user)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Email,Password,Perfil,estado,Nome,NumInterno,DataNascimento,TurmaId,NumTurma")] User user, HttpPostedFileBase foto)
         {
+            byte[] imageData = null;
+            if (foto != null && foto.ContentLength > 0)
+            {
+                
+                using (var binaryReader = new BinaryReader(foto.InputStream))
+                {
+                    imageData = binaryReader.ReadBytes(foto.ContentLength);
+                }
+
+            }
+
+            
             if (User.IsInRole("Administrador") && User.Identity.Name != user.Id.ToString())
             {
                 if (ModelState.IsValid)
@@ -204,9 +235,12 @@ namespace M17E_Caderneta.Controllers
                     u.Email = user.Email;
                     u.Perfil = user.Perfil;
                     u.DataNascimento = user.DataNascimento;
+                    if(imageData != null)
+                        u.foto = imageData;
 
                     if (User.IsInRole("Administrador"))
                     {
+                        u.NumTurma = null;
                         if (user.Perfil == 2)
                         {
                             u.TurmaId = user.TurmaId;
@@ -237,6 +271,13 @@ namespace M17E_Caderneta.Controllers
                     u.Email = user.Email;
                     u.Perfil = user.Perfil;
                     u.DataNascimento = user.DataNascimento;
+                    if (imageData != null)
+                    {
+                        u.foto = imageData;
+                        user.foto = u.foto;
+                    }
+
+
 
                     if (user.Password != null && user.Password != "")
                     {
@@ -251,8 +292,8 @@ namespace M17E_Caderneta.Controllers
                     await db.SaveChangesAsync();
                 }
             }
-            
 
+            
             if (User.IsInRole("Administrador") && User.Identity.Name != user.Id.ToString())
             {
                 user.perfis = new[]

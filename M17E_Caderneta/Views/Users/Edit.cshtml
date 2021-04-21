@@ -7,106 +7,120 @@
 <h2 class="mt-5">Editar Perfil</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Users", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
-    <div>
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+    <div class="d-flex justify-content-between">
+        <div class="w-100">
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email)
-            <div>
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                <div>
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Nome)
-            <div>
-                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nome)
+                <div>
+                    @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DataNascimento)
-            <div>
-                @Html.EditorFor(model => model.DataNascimento, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DataNascimento, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.DataNascimento)
+                <div>
+                    @Html.EditorFor(model => model.DataNascimento, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DataNascimento, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Perfil)
-            <div>
-                @Html.DropDownListFor(model => model.Perfil, new SelectList(Model.perfis, "Value", "Text"), new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Perfil, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Perfil)
+                <div>
+                    @Html.DropDownListFor(model => model.Perfil, new SelectList(Model.perfis, "Value", "Text"), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Perfil, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        @if (User.IsInRole("Administrador") && User.Identity.Name != Model.Id.ToString())
-        {
-            if (Model.Perfil == 2)
+            @if (User.IsInRole("Administrador") && User.Identity.Name != Model.Id.ToString())
             {
+                if (Model.Perfil == 2)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TurmaId, "Turmas")
+                        <div>
+                            @Html.DropDownList("TurmaId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TurmaId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NumTurma)
+                        <div>
+                            @Html.EditorFor(model => model.NumTurma, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NumTurma, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+
                 <div class="form-group">
-                    @Html.LabelFor(model => model.TurmaId, "Turmas")
+                    @Html.LabelFor(model => model.NumInterno)
                     <div>
-                        @Html.DropDownList("TurmaId", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.TurmaId, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.NumInterno, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NumInterno, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
+
+
                 <div class="form-group">
-                    @Html.LabelFor(model => model.NumTurma)
+                    @Html.LabelFor(model => model.estado)
                     <div>
-                        @Html.EditorFor(model => model.NumTurma, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.NumTurma, "", new { @class = "text-danger" })
+                        @Html.DropDownListFor(model => model.estado,
+                       new SelectList(new[] { new SelectListItem { Value = "False", Text = "Desativada" }, new SelectListItem { Value = "True", Text = "Ativada" } },
+                       "Value", "Text"), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
                     </div>
                 </div>
             }
-
-
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password)
+                    <div>
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
             <div class="form-group">
-                @Html.LabelFor(model => model.NumInterno)
                 <div>
-                    @Html.EditorFor(model => model.NumInterno, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.NumInterno, "", new { @class = "text-danger" })
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-secondary" })
+                    }
                 </div>
             </div>
-
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.estado)
-                <div>
-                    @Html.DropDownListFor(model => model.estado,
-                   new SelectList(new[] { new SelectListItem { Value = "False", Text = "Desativada" }, new SelectListItem { Value = "True", Text = "Ativada" } },
-                   "Value", "Text"), new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
+        </div>
+        <div class="w-100 d-flex flex-column align-content-end align-items-end">
+            @Html.Raw("<img id=\"img_foto\" src=\"data:image/jpeg;base64," + Convert.ToBase64String(Model.foto) + "\" class=\"img-thumbnail rounded\" style=\"width: 300px\" />")
+            
+            <div class="form-group mt-3">
+                <div class="custom-file">
+                    <input type="file" name="foto" onchange="UploadFile(this)" id="foto" class="custom-file-input" />
+                    @Html.LabelFor(model => model.foto, new { @class = "custom-file-label" })
                 </div>
-            </div>
-        }
-        else
-        {
-            <div class="form-group">
-                @Html.LabelFor(model => model.Password)
-                <div>
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        }
-
-        <div class="form-group">
-            <div>
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-                @if (User.IsInRole("Administrador"))
-                {
-                    @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-secondary" })
-                }
+                @Html.ValidationMessageFor(model => model.foto, "", new { @class = "text-danger" })
             </div>
         </div>
     </div>
@@ -125,5 +139,25 @@
                 theme: 'bootstrap4',
             });
         })
+    </script>
+
+    <script type="text/javascript">
+        function UploadFile(fileUpload) {
+            if (fileUpload.value != '') {
+                var url = $(fileUpload).val();
+                var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+                if (fileUpload.files && fileUpload.files[0] && (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#img_foto').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(fileUpload.files[0]);
+                }
+                else {
+
+                }
+            }
+        }
     </script>
 }

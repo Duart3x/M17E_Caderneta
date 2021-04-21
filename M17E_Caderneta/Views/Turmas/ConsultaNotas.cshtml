@@ -6,89 +6,126 @@
 <div class="shadow p-3 border">
 
 
-<p><b>Média Turma:</b> @ViewBag.MediaTurma Valores</p>
+    <p><b>Média Turma:</b> @ViewBag.MediaTurma Valores</p>
 
-@if (ViewBag.Disciplinas.Count > 0)
-{
-    <div class="row">
-        <div class="col-3">
-            <div class="list-group" id="list-tab" role="tablist">
-                @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
-                {
+    @if (ViewBag.Disciplinas.Count > 0)
+    {
+        <div class="row">
+            <div class="col-3">
+                <div class="list-group" id="list-tab" role="tablist">
+                    @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
+                    {
 
-                    <a class="list-group-item list-group-item-action" id="list-@disciplina.Id-list" data-toggle="list" href="#list-@disciplina.Id" role="tab" aria-controls="@disciplina.Id">
-                        <h5>@disciplina.Nome</h5>
-                        <small>@disciplina.Descricao</small>
-                    </a>
+                        <a class="list-group-item list-group-item-action" id="list-@disciplina.Id-list" data-toggle="list" href="#list-@disciplina.Id" role="tab" aria-controls="@disciplina.Id">
+                            <h5>@disciplina.Nome</h5>
+                            <small>@disciplina.Descricao</small>
+                        </a>
 
-                }
+                    }
+                </div>
             </div>
-        </div>
-        <div class="col-9">
-            <div class="tab-content" id="nav-tabContent">
-                @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
-                {
-                    <div class="tab-pane fade" id="list-@disciplina.Id" role="tabpanel" aria-labelledby="list-@disciplina.Id-list">
-                        <table class="table table-sm table-striped table-bordered">
-                            <thead class="table-dark">
-                                <tr>
-                                    <td>
-                                        Número
-                                    </td>
-                                    <td>
-                                        Aluno
-                                    </td>
-                                    <td>
-                                        Valores
-                                    </td>
-                                    <td>
-                                        Professor(a)
-                                    </td>
-                                    <td>
-                                        Data Lançamento
-                                    </td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (M17E_Caderneta.Models.Nota nota in ViewBag.Notas)
-                                {
-                                    if (nota.IdDisciplina != disciplina.Id)
-                                    {
-                                        continue;
-                                    }
+            <div class="col-9">
+                <div class="tab-content" id="nav-tabContent">
+                    @foreach (M17E_Caderneta.Models.Disciplina disciplina in ViewBag.Disciplinas)
+                    {
+                        <div class="tab-pane fade" id="list-@disciplina.Id" role="tabpanel" aria-labelledby="list-@disciplina.Id-list">
+                            <table class="table table-sm table-striped table-bordered">
+                                <thead class="table-dark">
                                     <tr>
                                         <td>
-                                            @nota.Aluno.NumTurma
+                                            Número
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Details","Users", new { id = nota.IdAluno})">@nota.Aluno.Nome</a>
-                                            
+                                            Aluno
                                         </td>
                                         <td>
-                                            @nota.Valor
+                                            Valores
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Details","Users", new { id = nota.IdProfessor})">@nota.Professor.Nome</a>                                            
+                                            Professor(a)
                                         </td>
                                         <td>
-                                            @nota.CreateDate
+                                            Data Lançamento
                                         </td>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (M17E_Caderneta.Models.Nota nota in ViewBag.Notas)
+                                    {
+                                        if (nota.IdDisciplina != disciplina.Id)
+                                        {
+                                            continue;
+                                        }
+                                        <tr>
+                                            <td>
+                                                @nota.Aluno.NumTurma
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Details","Users", new { id = nota.IdAluno})">@nota.Aluno.Nome</a>
+
+                                            </td>
+                                            <td>
+                                                @nota.Valor
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Details","Users", new { id = nota.IdProfessor})">@nota.Professor.Nome</a>
+                                            </td>
+                                            <td>
+                                                @nota.CreateDate
+                                            </td>
+                                        </tr>
 
 
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-}
-else
-{
-    <div class="text-muted">
-        Sem Resultados para apresentar
-    </div>
-}
+    }
+    else
+    {
+        <div class="text-muted">
+            Sem Resultados para apresentar
+        </div>
+    }
 </div>
+<hr />
+<h2 class="mt-5 ">Ver média por aluno</h2>
+<div class="shadow border p-3">
+    <input type="search" name="procuraAluno" id="procuraAluno" class="form-control mb-4 w-25" value="" placeholder="Nome do aluno" />
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <td>
+                    Nome Aluno
+                </td>
+                <td>
+                    Média
+                </td>
+            </tr>
+        </thead>
+        <tbody id="body_table">
+
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+
+    <script>
+
+        $("#procuraAluno").on('input',function () {
+            $.post("PesquisaNotasAluno", function (data) {
+                var html = "";
+                for (var i = 0; i < length; i++) {
+
+                }
+
+                $("#body_table").html = html;
+            });
+        });
+    </script>
+
+}

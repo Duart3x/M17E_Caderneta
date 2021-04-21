@@ -60,6 +60,14 @@ namespace M17E_Caderneta.Controllers
             return View(turmas.ToPagedList(pageNumber, pageSize));
         }
 
+        public JsonResult PesquisaNotasAluno(string nome)
+        {
+            var clientes = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Where(c => c.Aluno.Nome.Contains(nome)).ToList();
+
+
+            return Json(clientes, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Turmas/Details/5
         [Authorize(Roles = "Administrador,Professor")]
         public async Task<ActionResult> Details(int? id)
