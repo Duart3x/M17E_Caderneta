@@ -108,23 +108,41 @@
             </tr>
         </thead>
         <tbody id="body_table">
-
         </tbody>
     </table>
 </div>
 @section Scripts {
 
     <script>
+        var str = window.location.pathname;
+        var n = str.lastIndexOf('/');
+        var idTurma = str.substring(n + 1);
 
-        $("#procuraAluno").on('input',function () {
-            $.post("PesquisaNotasAluno", function (data) {
-                var html = "";
-                for (var i = 0; i < length; i++) {
+        $("#procuraAluno").on('input', function () {
+            var html = "";
 
-                }
+            if ($("#procuraAluno").val() != null ) {
+                var nome = $("#procuraAluno").val()
 
-                $("#body_table").html = html;
-            });
+                $.post("../PesquisaNotasAluno", { nome: nome, turma: idTurma }, function (data) {
+
+                    console.log(data)
+                    for (var i = 0; i < data.length; i++) {
+                        var aluno = data[i]
+                        html += `<tr>
+                                <td>
+                                    ${aluno.Nome}
+                                </td>
+                                <td>
+                                    ${aluno.Media}
+                                </td>
+                            </tr>`
+                    }
+                    $("#body_table").html(html);
+                });
+
+            }
+
         });
     </script>
 

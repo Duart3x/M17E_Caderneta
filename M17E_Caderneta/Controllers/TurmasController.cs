@@ -60,12 +60,12 @@ namespace M17E_Caderneta.Controllers
             return View(turmas.ToPagedList(pageNumber, pageSize));
         }
 
-        public JsonResult PesquisaNotasAluno(string nome)
+        public JsonResult PesquisaNotasAluno(string nome, int turma)
         {
-            var clientes = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Where(c => c.Aluno.Nome.Contains(nome)).ToList();
+            var notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Where(c => c.Aluno.Nome.Contains(nome) && c.Aluno.TurmaId == turma)
+                .GroupBy(e => e.Aluno, e=> e.Valor).Select(e => new { Nome = e.Key.Nome, Media = Math.Round(e.Average(),0) });
 
-
-            return Json(clientes, JsonRequestBehavior.AllowGet);
+            return Json(notas, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Turmas/Details/5
