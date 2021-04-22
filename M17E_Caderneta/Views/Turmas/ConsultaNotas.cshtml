@@ -95,7 +95,12 @@
 <hr />
 <h2 class="mt-5 ">Ver média por aluno</h2>
 <div class="shadow border p-3">
-    <input type="search" name="procuraAluno" id="procuraAluno" class="form-control mb-4 w-25" value="" placeholder="Nome do aluno" />
+    <div class="d-flex justify-content-between">
+        <input type="search" name="procuraAluno" id="procuraAluno" class="form-control mb-4 w-25" value="" placeholder="Nome do aluno" />
+        <input type="search" name="procuraMedia" id="procuraMedia" class="form-control mb-4 w-25" value="" placeholder="Media" />
+
+    </div>
+    
     <table class="table">
         <thead class="table-dark">
             <tr>
@@ -117,19 +122,35 @@
         var str = window.location.pathname;
         var n = str.lastIndexOf('/');
         var idTurma = str.substring(n + 1);
-
+        getAlunosMedia()
         $("#procuraAluno").on('input', function () {
-            var html = "";
+            
 
             if ($("#procuraAluno").val() != null ) {
-                var nome = $("#procuraAluno").val()
+                getAlunosMedia()
+            }
 
-                $.post("../PesquisaNotasAluno", { nome: nome, turma: idTurma }, function (data) {
+        });
 
-                    console.log(data)
-                    for (var i = 0; i < data.length; i++) {
-                        var aluno = data[i]
-                        html += `<tr>
+        $("#procuraMedia").on('input', function () {
+
+            if ($("#procuraMedia").val() != null) {
+                getAlunosMedia()
+            }
+
+        });
+
+        function getAlunosMedia() {
+            var nome = $("#procuraAluno").val()
+            var media = $("#procuraMedia").val()
+
+            var html = "";
+            $.post("../PesquisaNotasAluno", { nome: nome, turma: idTurma, media: media }, function (data) {
+
+                console.log(data)
+                for (var i = 0; i < data.length; i++) {
+                    var aluno = data[i]
+                    html += `<tr>
                                 <td>
                                     ${aluno.Nome}
                                 </td>
@@ -137,13 +158,10 @@
                                     ${aluno.Media}
                                 </td>
                             </tr>`
-                    }
-                    $("#body_table").html(html);
-                });
-
-            }
-
-        });
+                }
+                $("#body_table").html(html);
+            });
+        }
     </script>
 
 }

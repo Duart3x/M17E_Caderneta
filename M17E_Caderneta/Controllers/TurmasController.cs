@@ -60,10 +60,16 @@ namespace M17E_Caderneta.Controllers
             return View(turmas.ToPagedList(pageNumber, pageSize));
         }
 
-        public JsonResult PesquisaNotasAluno(string nome, int turma)
+        public JsonResult PesquisaNotasAluno(string nome, int turma, double? media)
         {
-            var notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Where(c => c.Aluno.Nome.Contains(nome) && c.Aluno.TurmaId == turma)
-                .GroupBy(e => e.Aluno, e=> e.Valor).Select(e => new { Nome = e.Key.Nome, Media = Math.Round(e.Average(),0) });
+            IOrderedQueryable notas = null;
+
+            if (media == null)
+                notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Where(c => c.Aluno.Nome.Contains(nome) && c.Aluno.TurmaId == turma)
+                    .GroupBy(e => e.Aluno, e=> e.Valor).Select(e => new { Nome = e.Key.Nome, Media = Math.Round(e.Average(),0) }).OrderByDescending(e => e.Media);
+            else
+                notas = db.Notas.Include(e => e.Aluno).Include(e => e.Aluno.Turma).Where(c => c.Aluno.Nome.Contains(nome) && c.Aluno.TurmaId == turma)
+                    .GroupBy(e => e.Aluno, e => e.Valor).Select(e => new { Nome = e.Key.Nome, Media = Math.Round(e.Average(), 0) }).Where(e => e.Media == media).OrderByDescending(e => e.Media);
 
             return Json(notas, JsonRequestBehavior.AllowGet);
         }
