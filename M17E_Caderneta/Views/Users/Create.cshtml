@@ -7,7 +7,7 @@
 
 
 <h2 class="mt-5">Fazer pedido de registo na plataforma</h2>
-@using (Html.BeginForm("Create","Users",FormMethod.Post,new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create", "Users", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -51,12 +51,13 @@
             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
         </div>
     </div>
+    @Html.Label("Foto de perfil")
+    <br />
+    @Html.Raw("<img id=\"img_foto\" src=\"\" class=\"img-thumbnail rounded\" style=\"width: 300px\" />")
 
     <div class="form-group">
-        @Html.Label("Foto de perfil")
-
         <div class="custom-file">
-            <input type="file" name="foto" id="foto" class="custom-file-input" />
+            <input type="file" name="foto" id="foto" class="custom-file-input" accept="image/png,image/jpg,image/jpeg" onchange="UploadFile(this)" />
             @Html.LabelFor(model => model.foto, new { @class = "custom-file-label" })
         </div>
         @Html.ValidationMessageFor(model => model.foto, "", new { @class = "text-danger" })
@@ -69,4 +70,24 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function UploadFile(fileUpload) {
+            if (fileUpload.value != '') {
+                var url = $(fileUpload).val();
+                var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+                if (fileUpload.files && fileUpload.files[0] && (ext == "png" || ext == "jpeg" || ext == "jpg")) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#img_foto').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(fileUpload.files[0]);
+                }
+                else {
+
+                }
+            }
+        }
+    </script>
 }

@@ -9,7 +9,6 @@ Professores
 Alunos
 
 
-
 <<< Professores >>>
 - Lançar Notas
 - Ver notas por turma

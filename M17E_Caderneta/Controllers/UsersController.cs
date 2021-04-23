@@ -13,6 +13,7 @@ using System.Text;
 using System.Security.Cryptography;
 using PagedList;
 using System.IO;
+using System.Data.Entity.Infrastructure;
 
 namespace M17E_Caderneta.Controllers
 {
@@ -23,10 +24,11 @@ namespace M17E_Caderneta.Controllers
 
         // GET: Users
         [Authorize(Roles = "Administrador")]
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page,string showImgs)
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = sortOrder;
+            ViewBag.showImgs = showImgs != null ? (showImgs == "on" || showImgs == "True" ? true : false) : false;
 
             if (searchString != null)
             {
@@ -119,7 +121,7 @@ namespace M17E_Caderneta.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (foto != null && foto.ContentLength > 0)
+                if (foto != null && foto.ContentLength > 0 && (foto.ContentType == "image/jpeg" || foto.ContentType == "image/png"))
                 {
                     byte[] imageData = null;
                     using (var binaryReader = new BinaryReader(foto.InputStream))
@@ -142,7 +144,7 @@ namespace M17E_Caderneta.Controllers
                 user.Password = Convert.ToBase64String(password);
                 
                 
-                if(User.IsInRole("Administrador"))
+                if(User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
                 {
                     user.estado = true;
                     if (user.NumInterno[0] == 'p')
@@ -155,10 +157,20 @@ namespace M17E_Caderneta.Controllers
                     user.estado = false;
                     user.Perfil = -1;
                 }
-                    
-                db.Users.Add(user);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Users.Add(user);
+                    await db.SaveChangesAsync();
+                    if (User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
+                        return RedirectToAction("Index");
+                    else
+                        return RedirectToAction("Index", "Login", new { });
+                }
+                catch (DbUpdateException err)
+                {
+                    ModelState.AddModelError("", "Não foi possível registar o utilizador. Número interno ou email repetido");
+                }
+                
             }
 
             return View(user);
@@ -215,7 +227,7 @@ namespace M17E_Caderneta.Controllers
         public async Task<ActionResult> Edit([Bind(Include = "Id,Email,Password,Perfil,estado,Nome,NumInterno,DataNascimento,TurmaId,NumTurma")] User user, HttpPostedFileBase foto)
         {
             byte[] imageData = null;
-            if (foto != null && foto.ContentLength > 0)
+            if (foto != null && foto.ContentLength > 0 && (foto.ContentType == "image/jpeg" || foto.ContentType == "image/png"))
             {
                 
                 using (var binaryReader = new BinaryReader(foto.InputStream))
@@ -224,13 +236,14 @@ namespace M17E_Caderneta.Controllers
                 }
 
             }
+            var u = await db.Users.FindAsync(user.Id);
+            user.foto = u.foto;
 
-            
             if (User.IsInRole("Administrador") && User.Identity.Name != user.Id.ToString())
             {
                 if (ModelState.IsValid)
                 {
-                    var u = await db.Users.FindAsync(user.Id);
+                    
                     u.Nome = user.Nome;
                     u.Email = user.Email;
                     u.Perfil = user.Perfil;
@@ -250,10 +263,17 @@ namespace M17E_Caderneta.Controllers
                         u.estado = user.estado;
                         u.NumInterno = user.NumInterno;
                     }
-
-                    db.Entry(u).State = EntityState.Modified;
-                    await db.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                    try
+                    {
+                        db.Entry(u).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception err)
+                    {
+                        ModelState.AddModelError("", "Não foi possível editar o utilizador. Número interno ou email repetido");
+                    }
+                    
 
                 }
             }
@@ -266,7 +286,6 @@ namespace M17E_Caderneta.Controllers
                     && ModelState.IsValidField("DataNascimento"))
                 {
 
-                    var u = await db.Users.FindAsync(user.Id);
                     u.Nome = user.Nome;
                     u.Email = user.Email;
                     u.Perfil = user.Perfil;
@@ -287,9 +306,16 @@ namespace M17E_Caderneta.Controllers
 
                         u.Password = user.Password;
                     }
-
-                    db.Entry(u).State = EntityState.Modified;
-                    await db.SaveChangesAsync();
+                    try
+                    {
+                        db.Entry(u).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception err)
+                    {
+                        ModelState.AddModelError("", "Não foi possível editar o utilizador. Número interno ou email repetido");
+                    }
+                    
                 }
             }
 
@@ -306,7 +332,7 @@ namespace M17E_Caderneta.Controllers
             }
             else
             {
-                var temp = db.Users.Where(u => u.Id.ToString() == User.Identity.Name && user.Id == u.Id).FirstOrDefault();
+                var temp = db.Users.Where(c => c.Id.ToString() == User.Identity.Name && user.Id == c.Id).FirstOrDefault();
                 if (temp == null)
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 AppRoleProvider app = new AppRoleProvider();

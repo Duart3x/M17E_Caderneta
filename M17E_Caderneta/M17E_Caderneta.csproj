@@ -194,6 +194,10 @@
     <Compile Include="Migrations\202104210942093_fotoPerfil.Designer.cs">
       <DependentUpon>202104210942093_fotoPerfil.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104230929169_uniqueFields.cs" />
+    <Compile Include="Migrations\202104230929169_uniqueFields.Designer.cs">
+      <DependentUpon>202104230929169_uniqueFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppRoleProvider.cs" />
     <Compile Include="Models\Disciplina.cs" />
@@ -407,6 +411,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202104210942093_fotoPerfil.resx">
       <DependentUpon>202104210942093_fotoPerfil.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104230929169_uniqueFields.resx">
+      <DependentUpon>202104230929169_uniqueFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

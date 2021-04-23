@@ -13,6 +13,8 @@ namespace M17E_Caderneta.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Insira um email válido")]
         [DataType(DataType.EmailAddress)]
+        [StringLength(50)]
+        [Index("Ix_emailUser",IsUnique = true,Order = 1)]
         public string Email { get; set; }
 
         [Required(ErrorMessage ="Por favor indique um nome")]
@@ -31,6 +33,9 @@ namespace M17E_Caderneta.Models
         [Display(Name = "Número Interno")]
         [Required(ErrorMessage = "Insira o seu número interno (a123 ou p123)")]
         [RegularExpression(@"^[p,a][0-9]+$", ErrorMessage = "O número interno deve ser começado por uma letra (p,a)")]
+        [Index("Ix_NumInternoUser", IsUnique = true, Order = 1)]
+        [StringLength(10)]
+
         public string NumInterno { get; set; }
 
         [DataType(DataType.Password)]

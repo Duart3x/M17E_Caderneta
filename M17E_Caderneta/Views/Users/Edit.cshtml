@@ -117,7 +117,7 @@
             
             <div class="form-group mt-3">
                 <div class="custom-file">
-                    <input type="file" name="foto" onchange="UploadFile(this)" id="foto" class="custom-file-input" />
+                    <input type="file" name="foto" onchange="UploadFile(this)" accept="image/png,image/jpg,image/jpeg" id="foto" class="custom-file-input" />
                     @Html.LabelFor(model => model.foto, new { @class = "custom-file-label" })
                 </div>
                 @Html.ValidationMessageFor(model => model.foto, "", new { @class = "text-danger" })
@@ -146,7 +146,7 @@
             if (fileUpload.value != '') {
                 var url = $(fileUpload).val();
                 var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
-                if (fileUpload.files && fileUpload.files[0] && (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) {
+                if (fileUpload.files && fileUpload.files[0] && (ext == "png" || ext == "jpeg" || ext == "jpg")) {
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
