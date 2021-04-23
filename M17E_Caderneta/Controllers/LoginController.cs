@@ -41,7 +41,7 @@ namespace M17E_Caderneta.Controllers
                 {
                     if (user.Email == utilizador.Email && user.Password == utilizador.Password)
                     {
-                        if(utilizador.Perfil != -1)
+                        if(utilizador.Perfil != -1 && utilizador.estado == true)
                         {
                             FormsAuthentication.SetAuthCookie(utilizador.Id.ToString(), false);
 
